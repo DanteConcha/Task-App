@@ -1,0 +1,22 @@
+{
+  "toDo": [
+    {
+      "tittle": "task 1",
+      "responsible": "dante",
+      "description": "khe",
+      "priority": "low"
+    },
+    {
+      "tittle": "task 2",
+      "responsible": "dante",
+      "description": "ola k ase",
+      "priority": "low"
+    },
+    {
+      "tittle": "task 3",
+      "responsible": "dante",
+      "description": "ponte a estudiar",
+      "priority": "high"
+    }
+  ]
+}
