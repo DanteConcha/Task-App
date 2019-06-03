@@ -29,6 +29,7 @@ class TaskCards extends Component {
   };
 
   render() {
+    let badges;
     const todos = this.state.toDo.map((todo, i) => {
       return (
         <div className="col-md-4" key={i}>
@@ -36,8 +37,16 @@ class TaskCards extends Component {
             <div className="card-header">
               <h3>{todo.tittle}</h3>
               <span
-                className="badge badge-pill badge-success
-              "
+                className={
+                  ((badges +=
+                    todo.priority === "low"
+                      ? "badge badge-pill badge-success"
+                      : "badge badge-pill badge-warning"),
+                  (badges +=
+                    todo.priority === "high"
+                      ? "badge badge-pill badge-danger"
+                      : ""))
+                }
               >
                 {todo.priority}
               </span>
