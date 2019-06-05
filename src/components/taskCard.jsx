@@ -23,31 +23,22 @@ class TaskCards extends Component {
 
   handleBadges = task => {
     let badges = "badge badge-pill badge-";
-    badges += this.state.toDo.priority === "low" ? "success" : "warning";
-    console.log(this.state.toDo.priority);
+    if (task === "low") {
+      badges += "success";
+    } else if (task === "medium") {
+      badges += "warning";
+    } else badges += "danger";
     return badges;
   };
 
   render() {
-    let badges;
     const todos = this.state.toDo.map((todo, i) => {
       return (
-        <div className="col-md-4" key={i}>
-          <div className="card ml-2 mt-4 ">
+        <div className="mr-4" key={i}>
+          <div className="card mt-4 ">
             <div className="card-header">
               <h3>{todo.tittle}</h3>
-              <span
-                className={
-                  ((badges +=
-                    todo.priority === "low"
-                      ? "badge badge-pill badge-success"
-                      : "badge badge-pill badge-warning"),
-                  (badges +=
-                    todo.priority === "high"
-                      ? "badge badge-pill badge-danger"
-                      : ""))
-                }
-              >
+              <span className={this.handleBadges(todo.priority)}>
                 {todo.priority}
               </span>
             </div>
@@ -69,10 +60,18 @@ class TaskCards extends Component {
     });
 
     return (
-      <div className="TaskCards">
+      <div>
         <Navigation count={this.state.toDo.length} />
-        <Form add={this.handleAddTask} />
-        <div className="row mt-4 ">{todos}</div>
+
+        <div className="row">
+          <div className="col-md-3 mt-4 ml-4 mr-4">
+            <Form add={this.handleAddTask} />
+          </div>
+
+          <div className="col-md-8">
+            <div className="row ml-4">{todos}</div>
+          </div>
+        </div>
       </div>
     );
   }
