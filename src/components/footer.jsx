@@ -15,5 +15,5 @@ class Footer extends Component {
     );
   }
 }
-
+//prueba
 export default Footer;
