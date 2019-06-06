@@ -35,7 +35,7 @@ class TaskCards extends Component {
     const todos = this.state.toDo.map((todo, i) => {
       return (
         <div className="mr-4" key={i}>
-          <div className="card mt-4 ">
+          <div className="card mt-4 text-center">
             <div className="card-header">
               <h3>{todo.tittle}</h3>
               <span className={this.handleBadges(todo.priority)}>
@@ -63,12 +63,12 @@ class TaskCards extends Component {
       <div>
         <Navigation count={this.state.toDo.length} />
 
-        <div className="row">
-          <div className="col-md-3 mt-4 ml-4 mr-4">
+        <div className="row bg-light">
+          <div className="col-md-3 mt-4 ml-4 mr-4 mb-4">
             <Form add={this.handleAddTask} />
           </div>
 
-          <div className="col-md-8">
+          <div className="col-md-8 mb-4">
             <div className="row ml-4">{todos}</div>
           </div>
         </div>
