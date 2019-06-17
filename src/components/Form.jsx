@@ -77,7 +77,7 @@ class Form extends Component {
             save
           </button>
         </form>
-        <TaskCards data={this.state.task} />
+        <TaskCards data={this.state.task} update={this.getTask} />
       </div>
     );
   }

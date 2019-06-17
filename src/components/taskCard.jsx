@@ -10,7 +10,7 @@ class TaskCards extends Component {
     Axios.post(`http://localhost:3000/task/delete?id=${task}`)
       .then()
       .then(console.log("se elimino id_db=", task))
-      .then(this.forceUpdate())
+      .then(this.props.update())
       .catch(err => console.error(err));
   };
 
