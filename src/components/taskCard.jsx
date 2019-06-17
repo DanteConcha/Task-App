@@ -1,24 +1,17 @@
 import React, { Component } from "react";
-import Navigation from "./navigation";
-import { toDo } from "../toDo.json";
-import Form from "./Form";
+import Axios from "axios";
+
 class TaskCards extends Component {
   state = {
-    toDo
+    todo: this.props.data
   };
 
   removeTask = task => {
-    this.state.toDo.splice(task, 1);
-    this.setState({});
-    console.log("elminado, restates=", this.state.toDo.length);
-  };
-
-  handleAddTask = toDo => {
-    this.setState({
-      toDo: [...this.state.toDo, toDo]
-    });
-
-    console.log("agregado");
+    Axios.post(`http://localhost:3000/task/delete?id=${task}`)
+      .then()
+      .then(console.log("se elimino id_db=", task))
+      .then(this.forceUpdate())
+      .catch(err => console.error(err));
   };
 
   handleBadges = task => {
@@ -32,7 +25,7 @@ class TaskCards extends Component {
   };
 
   render() {
-    const todos = this.state.toDo.map((todo, i) => {
+    const todos = this.props.data.map((todo, i) => {
       return (
         <div className="mr-4" key={i}>
           <div className="card mt-4 text-center">
@@ -46,10 +39,13 @@ class TaskCards extends Component {
             <div className="card-body">
               <p>{todo.description}</p>
             </div>
+            <div className="card-body">
+              <p>{todo.id}</p>
+            </div>
             <div className="card-footer">
               <button
                 className="btn btn-danger"
-                onClick={this.removeTask.bind(this)}
+                onClick={this.removeTask.bind(this, todo.id)}
               >
                 Delete
               </button>
@@ -61,13 +57,8 @@ class TaskCards extends Component {
 
     return (
       <div>
-        <Navigation count={this.state.toDo.length} />
-
         <div className="row bg-light">
-          <div className="col-md-3 mt-4 ml-4 mr-4 mb-4">
-            <Form add={this.handleAddTask} />
-          </div>
-
+          <div className="col-md-3 mt-4 ml-4 mr-4 mb-4" />
           <div className="col-md-8 mb-4">
             <div className="row ml-4">{todos}</div>
           </div>
