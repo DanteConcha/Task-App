@@ -1,16 +1,17 @@
 import React, { Component } from "react";
-//import { toDo } from "../toDo.json";
 import Axios from "axios";
 import TaskCards from "./taskCard";
 import Navigation from "./navigation";
-//import {} from "../App";
+import Footer from "./Footer";
+
 class Form extends Component {
   state = {
     tittle: "",
     responsible: "",
     description: "",
     priority: "low",
-    task: []
+    task: [],
+    token: localStorage.getItem("token")
   };
 
   componentDidMount() {
@@ -26,60 +27,81 @@ class Form extends Component {
 
       .catch(error => console.log(error, "no jala"));
   };
+
   render() {
-    return (
-      <div className="card bg-light">
-        <Navigation count={this.state.task.length} />
-        <form className="card-body" onSubmit={this.handleSubmit}>
-          <div className="form-group">
-            <input
-              type="text"
-              name="tittle"
-              className="form-control"
-              placeholder="Tittle"
-              value={this.state.tittle}
-              onChange={this.handleInput}
-            />
+    console.log("token=", this.state.token);
+    if (this.state.token === "token no valido") {
+      return (
+        <div>
+          <p>incorrect password, try again</p>
+        </div>
+      );
+    } else {
+      if (!this.state.token) {
+        return (
+          <div>
+            <p>no token</p>
           </div>
-          <div className="form-group">
-            <input
-              type="text"
-              name="responsible"
-              className="form-control"
-              placeholder="Responsible"
-              value={this.state.responsible}
-              onChange={this.handleInput}
-            />
+        );
+      } else {
+        return (
+          <div>
+            <div className="card bg-light">
+              <Navigation count={this.state.task.length} />
+              <form className="card-body" onSubmit={this.handleSubmit}>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    name="tittle"
+                    className="form-control"
+                    placeholder="Tittle"
+                    value={this.state.tittle}
+                    onChange={this.handleInput}
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    name="responsible"
+                    className="form-control"
+                    placeholder="Responsible"
+                    value={this.state.responsible}
+                    onChange={this.handleInput}
+                  />
+                </div>
+                <div className="form-group">
+                  <input
+                    type="text"
+                    name="description"
+                    className="form-control"
+                    placeholder="Description"
+                    value={this.state.description}
+                    onChange={this.handleInput}
+                  />
+                </div>
+                <div className="form-group">
+                  <select
+                    name="priority"
+                    className="form-control"
+                    value={this.state.priority}
+                    onChange={this.handleInput}
+                  >
+                    <option>low</option>
+                    <option>medium</option>
+                    <option>high</option>
+                  </select>
+                </div>
+                <button className="btn btn-primary" type="submit">
+                  save
+                </button>
+              </form>
+              <TaskCards data={this.state.task} update={this.getTask} />
+              <Footer />
+            </div>
           </div>
-          <div className="form-group">
-            <input
-              type="text"
-              name="description"
-              className="form-control"
-              placeholder="Description"
-              value={this.state.description}
-              onChange={this.handleInput}
-            />
-          </div>
-          <div className="form-group">
-            <select
-              name="priority"
-              className="form-control"
-              value={this.state.priority}
-              onChange={this.handleInput}
-            >
-              <option>low</option>
-              <option>medium</option>
-              <option>high</option>
-            </select>
-          </div>
-          <button className="btn btn-primary" type="submit">
-            save
-          </button>
-        </form>
-        <TaskCards data={this.state.task} update={this.getTask} />
-      </div>
-    );
+        );
+      }
+    }
   }
 
   handleInput = e => {

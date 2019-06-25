@@ -1,14 +1,11 @@
 import React, { Component } from "react";
-import Footer from "../src/components/footer";
-import Form from "./components/Form";
+import Sign from "./components/sign";
 
 class App extends Component {
   render() {
     return (
       <div>
-        <Form />
-
-        <Footer />
+        <Sign />
       </div>
     );
   }

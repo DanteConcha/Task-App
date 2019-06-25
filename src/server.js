@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const mysql = require("mysql");
 const app = express();
+const jwt = require("jsonwebtoken");
+const bcryptjs = require("bcryptjs");
 const PORT = process.env.PORT || 3000;
 
 app.set("port", process.env.PORT || 3000);
@@ -25,27 +27,57 @@ const connection = mysql.createConnection({
   password: "Etnad.h75",
   database: "task"
 });
-require("./routes/html-routes")(app, connection);
-
 app.listen(PORT, () => {
   console.log("app running on port", { PORT });
 });
 
-app.post("/task/add", (req, res) => {
-  const { tittle, responsible, description, priority } = req.query;
-  const INSERT_TASK_QUERY =
-    "INSERT INTO task (tittle,responsible,description,priority) VALUES (?)";
-  let values = [tittle, responsible, description, priority];
-  connection.query(INSERT_TASK_QUERY, [values], (err, results) => {
-    err ? res.send(err, "chale") : res.send("se agrego a db task");
-  });
-});
+require("./routes/html-routes")(app, connection);
+require("./routes/addTask")(app, connection);
+require("./routes/deleteTask")(app, connection);
+require("./routes/signUp")(app, connection);
+require("./routes/signIn")(app, connection);
 
-app.post("/task/delete", (req, res) => {
-  const { id } = req.query;
-  const DELETE_TASK_QUERY = "delete from task where id= (?)";
-  let values = [id];
-  connection.query(DELETE_TASK_QUERY, [values], (err, results) => {
-    err ? res.send(err, "chale") : res.send("se elimino");
-  });
+function findUser(req, res, next) {
+  const { email, password } = req.query;
+
+  connection.query(
+    `SELECT username,password from users where email= (?)`,
+    email,
+    (err, rows) => {
+      for (var i in rows) {
+        const hash = rows[i].password;
+        const user = rows[i].username;
+
+        bcryptjs.compare(password, hash, function(err, res) {
+          console.log("findeuser function= ", res);
+          req.found = res;
+          next();
+        });
+      }
+    }
+  );
+}
+
+app.post("/login", findUser, (req, res) => {
+  const { email } = req.query;
+
+  console.log("email= ", email);
+
+  const found = req.found;
+  console.log("finduser route=", found);
+  if (found) {
+    var token = jwt.sign({ email }, "Secret Password", {
+      expiresIn: "1sec"
+    });
+    jwt.verify(token, "Secret Password", function(err, decoded) {});
+    console.log("token= ", token);
+    res.send({ token });
+  } else {
+    res.send({ token: "token no valido" });
+  }
+  if (decoded) {
+    console.log(decoded);
+  } else {
+    console.log(err);
+  }
 });
