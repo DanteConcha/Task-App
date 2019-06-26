@@ -1,14 +1,11 @@
 import React, { Component } from "react";
-
-import TaskCard from "../src/components/taskCard";
-import Footer from "../src/components/footer";
+import Sign from "./components/sign";
 
 class App extends Component {
   render() {
     return (
       <div>
-        <TaskCard />
-        <Footer />
+        <Sign />
       </div>
     );
   }
