@@ -1,24 +1,59 @@
 import React, { Component } from "react";
-import { toDo } from "../toDo.json";
+import Axios from "axios";
+import { withRouter } from "react-router-dom";
 
 class Navigation extends Component {
-  state = {
-    toDo
+  handleRedirect = () => {
+    const path = "/";
+    this.props.history.push(path);
   };
+
+  handleLogOut = _ => {
+    Axios({
+      url: `http://localhost:3000/logOut`,
+      method: "GET",
+      withCredentials: true
+    }).then(console.log("logged out"));
+    // .then(this.handleRedirect());
+  };
+
   render() {
+    console.log("user= ", this.props.username);
     return (
       <div>
-        <nav className="navbar navbar-dark bg-dark">
-          <span className="text-white ">
-            <span>Task </span>
-            <span className="badge badge-pill badge-light mr-2 ">
-              {this.props.count}
+        <nav className="navbar navbar-expand navbar-dark bg-dark">
+          <div className="text-white ">
+            <ul className="navbar-nav mr-auto">
+              <li className="">
+                <span>Task </span>
+              </li>
+              <li>
+                <span className="badge badge-pill badge-light ml-1 ">
+                  {this.props.count}
+                </span>
+              </li>
+            </ul>
+          </div>
+
+          <div className="mx-auto order-0">
+            <span className="navbar-text mx-auto text-white">
+              hi,{this.props.username}
             </span>
-          </span>
+          </div>
+
+          <div className="">
+            <ul className="navbar-nav ml-auto">
+              <li className="nav-item">
+                <a className="nav-link" href="/" onClick={this.handleLogOut}>
+                  Log Out
+                </a>
+              </li>
+            </ul>
+          </div>
         </nav>
       </div>
     );
   }
 }
 
-export default Navigation;
+export default withRouter(Navigation);

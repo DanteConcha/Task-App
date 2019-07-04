@@ -1,6 +1,7 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import Axios from "axios";
+import "../sign-up-styles.css";
 
 class SignUpForm extends Component {
   state = {
@@ -17,26 +18,34 @@ class SignUpForm extends Component {
     console.log(value, name);
   };
 
+  handleRedirect = () => {
+    const path = "/task";
+    this.props.history.push(path);
+  };
   handleSubmit = e => {
     e.preventDefault();
-    const data = this.state;
-    Axios.post(
-      `http://localhost:3000/signUp?username=${data.username}&email=${
-        data.email
-      }&password=${data.password}`
-    ).then(
-      this.setState({
-        email: "",
-        password: "",
-        username: ""
-      })
-    );
-    console.log("The form was submitted with the following data:");
-    console.log(this.state);
+    const userdata = this.state;
+    Axios.get(
+      `http://localhost:3000/signUp?username=${userdata.username}&email=${
+        userdata.email
+      }&password=${userdata.password}`,
+      { withCredentials: true }
+    )
+      .then(
+        this.setState({
+          email: "",
+          password: "",
+          username: ""
+        })
+      )
+      .then(setTimeout(this.handleRedirect, 500))
+      .catch(error => console.log(error, "no jala"));
+
+    console.log("data= ", this.state);
   };
   render() {
     return (
-      <div className="text-center row md-4">
+      <div className="text-center body">
         <form className="form-signin" onSubmit={this.handleSubmit}>
           <h1 className="h3 mb-3 font-weight-normal">Sign Up</h1>
           <label htmlFor="name" className="sr-only">
@@ -78,11 +87,10 @@ class SignUpForm extends Component {
             onChange={this.handleInput}
             required
           />
-          <Link to="/task">
-            <button className="btn btn-lg btn-primary btn-block" type="submit">
-              Sign Up
-            </button>
-          </Link>
+
+          <button className="btn btn-lg btn-primary btn-block" type="submit">
+            Sign Up
+          </button>
 
           <Link to="/sign-in" className="FormField__Link">
             I'm already member
@@ -94,4 +102,4 @@ class SignUpForm extends Component {
   }
 }
 
-export default SignUpForm;
+export default withRouter(SignUpForm);
