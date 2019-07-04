@@ -3,7 +3,6 @@ import { HashRouter as Router, Route, Redirect } from "react-router-dom";
 import SignUpForm from "./SignUpForm";
 import SignInForm from "./SignInForm";
 import Form from "./Form";
-import autToken from "./autToken";
 
 class Sign extends Component {
   state = {
@@ -14,7 +13,6 @@ class Sign extends Component {
     return (
       <Router basename="/">
         <Route exact path="/" component={SignUpForm} />
-        <Route path="/autToken" component={autToken} />
         <Route
           path="/task"
           render={() =>

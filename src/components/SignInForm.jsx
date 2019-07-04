@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 import Axios from "axios";
+import "../sign-in-styles.css";
 
 class SignInForm extends Component {
   state = {
@@ -26,15 +27,13 @@ class SignInForm extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const userdata = this.state;
-    Axios.post(
+    Axios.get(
       `http://localhost:3000/login?email=${userdata.email}&password=${
         userdata.password
-      }`
+      }`,
+      { withCredentials: true }
     )
       .then(
-        data => {
-          localStorage.setItem("token", data.data.token);
-        },
         this.setState({
           email: "",
           password: "",

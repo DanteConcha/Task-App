@@ -11,7 +11,8 @@ class Form extends Component {
     description: "",
     priority: "low",
     task: [],
-    token: localStorage.getItem("token")
+    verify: false,
+    username: ""
   };
 
   componentDidMount() {
@@ -19,88 +20,96 @@ class Form extends Component {
   }
 
   getTask = _ => {
-    Axios.get("http://localhost:3000/task")
+    Axios({
+      url: `http://localhost:3000/task`,
+      method: "GET",
+      withCredentials: true
+    })
       .then(data => {
-        console.log(data.data.db, "app js state");
-        this.setState({ task: data.data.db });
+        console.log(data.data, "app js state");
+        this.setState({ task: data.data.db, username: data.data.user });
       })
 
       .catch(error => console.log(error, "no jala"));
+    Axios({
+      url: `http://localhost:3000/verify`,
+      method: "get",
+      withCredentials: true
+    }).then(data => {
+      console.log("server=", data.data);
+      this.setState({
+        verify: data.data
+      });
+    });
   };
 
   render() {
-    console.log("token=", this.state.token);
-    if (this.state.token === "token no valido") {
+    if (!this.state.verify) {
       return (
         <div>
           <p>incorrect password, try again</p>
         </div>
       );
     } else {
-      if (!this.state.token) {
-        return (
-          <div>
-            <p>no token</p>
+      return (
+        <div>
+          <div className="card bg-light">
+            <Navigation
+              count={this.state.task.length}
+              username={this.state.username}
+            />
+            <form className="card-body" onSubmit={this.handleSubmit}>
+              <div className="form-group ">
+                <input
+                  type="text"
+                  name="tittle"
+                  className="form-control"
+                  placeholder="Tittle"
+                  value={this.state.tittle}
+                  onChange={this.handleInput}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="responsible"
+                  className="form-control"
+                  placeholder="Responsible"
+                  value={this.state.responsible}
+                  onChange={this.handleInput}
+                />
+              </div>
+              <div className="form-group">
+                <input
+                  type="text"
+                  name="description"
+                  className="form-control"
+                  placeholder="Description"
+                  value={this.state.description}
+                  onChange={this.handleInput}
+                />
+              </div>
+              <div className="form-group">
+                <select
+                  name="priority"
+                  className="form-control"
+                  value={this.state.priority}
+                  onChange={this.handleInput}
+                >
+                  <option>low</option>
+                  <option>medium</option>
+                  <option>high</option>
+                </select>
+              </div>
+              <button className="btn btn-primary" type="submit">
+                save
+              </button>
+            </form>
           </div>
-        );
-      } else {
-        return (
-          <div>
-            <div className="card bg-light">
-              <Navigation count={this.state.task.length} />
-              <form className="card-body" onSubmit={this.handleSubmit}>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="tittle"
-                    className="form-control"
-                    placeholder="Tittle"
-                    value={this.state.tittle}
-                    onChange={this.handleInput}
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="responsible"
-                    className="form-control"
-                    placeholder="Responsible"
-                    value={this.state.responsible}
-                    onChange={this.handleInput}
-                  />
-                </div>
-                <div className="form-group">
-                  <input
-                    type="text"
-                    name="description"
-                    className="form-control"
-                    placeholder="Description"
-                    value={this.state.description}
-                    onChange={this.handleInput}
-                  />
-                </div>
-                <div className="form-group">
-                  <select
-                    name="priority"
-                    className="form-control"
-                    value={this.state.priority}
-                    onChange={this.handleInput}
-                  >
-                    <option>low</option>
-                    <option>medium</option>
-                    <option>high</option>
-                  </select>
-                </div>
-                <button className="btn btn-primary" type="submit">
-                  save
-                </button>
-              </form>
-              <TaskCards data={this.state.task} update={this.getTask} />
-              <Footer />
-            </div>
-          </div>
-        );
-      }
+          <TaskCards data={this.state.task} update={this.getTask} />
+          <Footer />
+        </div>
+      );
     }
   }
 
@@ -113,11 +122,13 @@ class Form extends Component {
   handleSubmit = e => {
     e.preventDefault();
     const tasks = this.state;
-    Axios.post(
-      `http://localhost:3000/task/add?tittle=${tasks.tittle}&responsible=${
+    Axios({
+      url: `http://localhost:3000/task/add?tittle=${tasks.tittle}&responsible=${
         tasks.responsible
-      }&description=${tasks.description}&priority=${tasks.priority}`
-    )
+      }&description=${tasks.description}&priority=${tasks.priority}`,
+      method: "POST",
+      withCredentials: true
+    })
       .then(
         this.setState({
           title: "",

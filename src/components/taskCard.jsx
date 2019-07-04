@@ -7,7 +7,11 @@ class TaskCards extends Component {
   };
 
   removeTask = task => {
-    Axios.post(`http://localhost:3000/task/delete?id=${task}`)
+    Axios({
+      url: `http://localhost:3000/task/delete?id=${task}`,
+      method: "POST",
+      withCredentials: true
+    })
       .then()
       .then(console.log("se elimino id_db=", task))
       .then(this.props.update())
@@ -57,9 +61,8 @@ class TaskCards extends Component {
 
     return (
       <div>
-        <div className="row bg-light">
-          <div className="col-md-3 mt-4 ml-4 mr-4 mb-4" />
-          <div className="col-md-8 mb-4">
+        <div className="">
+          <div className="col-md-12 mb-4">
             <div className="row ml-4">{todos}</div>
           </div>
         </div>
